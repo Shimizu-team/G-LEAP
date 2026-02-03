@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Logs
+*.log
+logs/
+
+# Generated outputs
+examples/output*.csv
+
+# Tutorial generated files
+data/*_tutorial.*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store

@@ -1,0 +1,53 @@
+# GLEAP Python Dependencies
+#
+# インストール方法:
+#   pip install -r requirements.txt
+#
+# 注意: PyTorchとCUDAは事前にインストールが必要
+#   pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 --index-url https://download.pytorch.org/whl/cu121
+
+# ==== Core Deep Learning ====
+torch>=2.4.0
+torchvision>=0.19.0
+torchaudio>=2.4.0
+torch-geometric>=2.6.0
+
+# ==== Scientific Computing ====
+numpy>=1.26.0
+pandas>=2.2.0
+scipy>=1.10.0
+scikit-learn>=1.3.0
+
+# ==== Visualization ====
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# ==== Utilities ====
+networkx>=3.0
+tqdm>=4.66.0
+h5py
+pyyaml
+joblib
+ipykernel
+
+# ==== Chemistry/Biology ====
+rdkit>=2024.03
+biopython>=1.84
+
+# ==== ESM-C (Protein Embeddings) ====
+esm>=3.1.0
+biotite>=0.40.0
+einops
+cloudpathlib
+transformers>=4.40.0
+msgpack-numpy
+tenacity
+brotli
+
+# ==== Uni-Mol (Compound Embeddings) ====
+unimol-tools>=0.1.5
+addict
+numba>=0.58.0
+
+# ==== Additional Dependencies ====
+httpx

@@ -1,0 +1,11 @@
+UniProt ID,smiles,Label
+P42866,Oc1ccc2C[C@H]3N(CC4CC4)CC[C@@]45[C@@H](Oc1c24)[C@@]1(O)CC[C@@]35N(CC2CC2)C1,1.0
+P42866,CC#CC#CC#C\C=C\C1OC1C=C,0.0
+P25103,OC1CC(N(C1)C(=O)c1cn(CCCCc2nn[n-]n2)c2ccccc12)C(=O)NC(Cc1c[nH]c2ccccc12)C(=O)OCc1cc(cc(c1)C(F)(F)F)C(F)(F)F,1.0
+P25103,CCCCC1CCN(CCCC(=O)c2ccccc2C)CC1,0.0
+P21462,CC1C[C@@H](NC(=O)Nc2ccc(Cl)cc2F)C(=O)N1c1ccc(c(F)c1F)-c1cccnc1P(C)(C)=O,1.0
+P21462,CSc1ccccc1NS(=O)(=O)c1ccccc1,0.0
+Q92633,CCCCCCCCCCCCCCCCCCOC[C@H](COP(O)(O)=S)OC,1.0
+Q92633,C[C@@H](OC(=O)Nc1c(cnn1C)-c1ccc(CC(O)=O)cc1)c1ccccc1,0.0
+P47211,COc1ccccc1N(CCOc1ccc(C)cc1)C(=O)CN1CCCCC1,1.0
+P47211,COc1ccc(Nc2cc(nc(n2)N2CCCC2)N2CCN(CC2)c2ccccc2)cc1,0.0

@@ -1,0 +1,78 @@
+# GLEAP統合環境
+#
+# 作成方法:
+#   conda env create -f environment.yaml
+#
+# 更新方法:
+#   conda env update -f environment.yaml --prune
+#
+# 注意:
+# - PyTorch 2.4.1 + CUDA 12.1を使用
+# - torch-geometric, esm, unimol-toolsはpipでインストール
+# - Python 3.10を使用（esm 3.1.3とunimol-tools 0.1.5の共通対応バージョン）
+
+name: gleap
+
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+
+dependencies:
+  # Python
+  - python=3.10
+
+  # PyTorch (CUDA 12.1)
+  - pytorch=2.4.1
+  - pytorch-cuda=12.1
+  - torchaudio=2.4.1
+  - torchvision=0.19.1
+
+  # Core scientific
+  - numpy=1.26.4
+  - pandas=2.2.3
+  - scipy>=1.10.0
+
+  # Machine learning
+  - scikit-learn>=1.3.0
+
+  # Visualization
+  - matplotlib>=3.7.0
+  - seaborn>=0.12.0
+
+  # Utilities
+  - networkx>=3.0
+  - tqdm>=4.66.0
+  - h5py
+  - pyyaml
+  - joblib
+  - ipykernel
+
+  # Chemistry/Biology (conda-forge)
+  - rdkit>=2024.03
+  - biopython>=1.84
+
+  # pip dependencies
+  - pip
+  - pip:
+    # Graph Neural Networks
+    - torch-geometric>=2.6.0
+
+    # ESM-C (protein embeddings)
+    - esm>=3.1.0
+    - biotite>=0.40.0
+    - einops
+    - cloudpathlib
+    - transformers>=4.40.0
+    - msgpack-numpy
+    - tenacity
+    - brotli
+
+    # Uni-Mol (compound embeddings)
+    - unimol-tools>=0.1.5
+    - addict
+    - numba>=0.58.0
+
+    # Additional dependencies
+    - httpx
