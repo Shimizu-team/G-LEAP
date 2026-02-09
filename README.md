@@ -1,6 +1,18 @@
 # G-LEAP: GPCR-Ligand Interaction Prediction
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/shimizu-team/G-LEAP/blob/main/examples/tutorial_inference.ipynb)
+
 Graph-based model for predicting GPCR-ligand interactions using ESM-C protein embeddings and Uni-Mol compound representations.
+
+## System Requirements
+
+This software has been developed and tested on:
+- **Operating System**: Red Hat Enterprise Linux 9.4
+- **Python**: 3.10.19
+- **GPU**: NVIDIA H100 (96 GB VRAM)
+- **CUDA**: 12.1
+
+An NVIDIA GPU with CUDA support is required for optimal performance. CPU-only inference is possible but significantly slower.
 
 ## Repository Structure
 
@@ -44,6 +56,8 @@ Or install with pip:
 pip install -r requirements.txt
 ```
 
+**Installation time:** Typical installation takes approximately 10-15 minutes on a standard workstation with a stable internet connection.
+
 ### Jupyter Kernel (Optional)
 
 ```bash
@@ -52,7 +66,9 @@ python -m ipykernel install --user --name gleap --display-name "Python (gleap)"
 
 ## Quick Start
 
-See the interactive tutorial: `examples/tutorial_inference.ipynb`
+See the interactive tutorial: `examples/tutorial_inference.ipynb` [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/shimizu-team/G-LEAP/blob/main/examples/tutorial_inference.ipynb)
+
+**Expected runtime:** The complete tutorial notebook runs in 2-3 minutes on an NVIDIA H100 GPU.
 
 ### Run Sample Inference
 
@@ -164,7 +180,11 @@ The output CSV contains:
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
-Note: AlphaFold structures used in examples are under [CC-BY 4.0](https://alphafold.ebi.ac.uk/faq#faq-7).
+### Third-party Components
+
+- **AlphaFold structures**: Used in examples are under [CC-BY 4.0](https://alphafold.ebi.ac.uk/faq#faq-7)
+- **ESM-C 300M**: [Cambrian Open License](https://github.com/evolutionaryscale/esm/blob/main/LICENSE.md)
+- **Uni-Mol Tools**: [MIT License](https://github.com/deepmodeling/Uni-Mol)
 
 ## Citation
 

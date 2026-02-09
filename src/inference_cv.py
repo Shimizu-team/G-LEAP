@@ -59,7 +59,7 @@ def parse_args():
     parser.add_argument('--n_folds', type=int, default=10,
                        help='Number of CV folds to use (default: 10)')
     parser.add_argument('--ensemble_method', type=str, default='mean',
-                       choices=['mean', 'weighted', 'majority'],
+                       choices=['mean', 'majority'],
                        help='Ensemble method (default: mean)')
 
     # Model parameters (fixed for pretrained models)
@@ -93,7 +93,6 @@ def load_cv_models(model_dir, model_type, split_type, n_folds, args):
     print(f"Using device: {device}")
 
     models = []
-    model_weights = []
 
     for fold in range(n_folds):
         # Model file search pattern
@@ -128,19 +127,13 @@ def load_cv_models(model_dir, model_type, split_type, n_folds, args):
             checkpoint = torch.load(model_path, map_location=device, weights_only=False)
             if 'model_state_dict' in checkpoint:
                 model.load_state_dict(checkpoint['model_state_dict'])
-                # Get weight from results (using AUC)
-                if 'results' in checkpoint and 'test_auc' in checkpoint['results']:
-                    model_weights.append(checkpoint['results']['test_auc'])
-                else:
-                    model_weights.append(1.0)  # Default weight
             else:
                 model.load_state_dict(checkpoint)
-                model_weights.append(1.0)  # Default weight
 
             model.to(device)
             model.eval()
             models.append(model)
-            print(f"Loaded fold {fold} model successfully (weight: {model_weights[-1]:.4f})")
+            print(f"Loaded fold {fold} model successfully")
 
         except Exception as e:
             print(f"Error loading model for fold {fold}: {e}")
@@ -150,7 +143,7 @@ def load_cv_models(model_dir, model_type, split_type, n_folds, args):
         raise ValueError("No models could be loaded successfully!")
 
     print(f"Successfully loaded {len(models)} models")
-    return models, model_weights, device
+    return models, device
 
 def prepare_dataset(csv_file, protein_graph_path, ligand_graph_path):
     """Prepare dataset (following train_cv.py)"""
@@ -163,91 +156,6 @@ def prepare_dataset(csv_file, protein_graph_path, ligand_graph_path):
     print(f"Protein graph entries: {len(pdb_graph)}")
     print(f"Ligand graph entries: {len(smiles_graph_dict)}")
 
-    # UniprotID to PDB mapping (same as train_cv.py)
-    uniprot_to_pdb = {"P25025" : "pdb4q3h.ent",
-    "Q13324" : "pdb3n93.ent",
-    "P30939" : "pdb7exd.ent",
-    "P41143" : "pdb4n6h.ent",
-    "P33032" : "pdb8inr.ent",
-    "P18089" : "pdb6k41.ent",
-    "P42866" : "pdb4dkl.ent",
-    "O43603" : "pdb7wq4.ent",
-    "Q9HBX9" : "pdb2jm4.ent",
-    "Q8TDU6" : "pdb7bw0.ent",
-    "P35367" : "pdb3rze.ent",
-    "Q13304" : "pdb7y89.ent",
-    "P49238" : "pdb7xbw.ent",
-    "P41586" : "pdb2jod.ent",
-    "P43119" : "pdb8x79.ent",
-    "Q92633" : "pdb4z34.ent",
-    "P30989" : "pdb2lyw.ent",
-    "P34969" : "pdb7xtc.ent",
-    "Q9NQS5" : "pdb8g05.ent",
-    "P51684" : "pdb6wwz.ent",
-    "Q96LB2" : "pdb8dwc.ent",
-    "P30680" : "pdb6exj.ent",
-    "Q8TDV5" : "pdb7wcm.ent",
-    "P18825" : "pdb6kuw.ent",
-    "P28223" : "pdb6a93.ent",
-    "P41587" : "pdb2x57.ent",
-    "P08912" : "pdb6ol9.ent",
-    "P32241" : "pdb1of2.ent",
-    "P21554" : "pdb1lvq.ent",
-    "P25929" : "pdb5zbq.ent",
-    "P30988" : "pdb5ii0.ent",
-    "P32249" : "pdb7tuy.ent",
-    "P35400" : "pdb2e4z.ent",
-    "P34972" : "pdb2ki9.ent",
-    "P08588" : "pdb2lsq.ent",
-    "P35348" : "pdb7ym8.ent",
-    "Q923Y8" : "pdb8jlj.ent",
-    "P31422" : "pdb2e4u.ent",
-    "Q9HBW0" : "pdb4p0c.ent",
-    "O95136" : "pdb7t6b.ent",
-    "P30968" : "pdb7br3.ent",
-    "Q9UKP6" : "pdb6hvk.ent",
-    "O14842" : "pdb4phu.ent",
-    "P25103" : "pdb2ks9.ent",
-    "P41595" : "pdb4ib4.ent",
-    "P21730" : "pdb2k3u.ent",
-    "Q14831" : "pdb3mq4.ent",
-    "Q9Y5N1" : "pdb7f61.ent",
-    "P14416" : "pdb5aer.ent",
-    "P41180" : "pdb5fbh.ent",
-    "P32248" : "pdb6qzh.ent",
-    "Q969F8" : "pdb7yqe.ent",
-    "P21918" : "pdb8irv.ent",
-    "P08913" : "pdb1hll.ent",
-    "P30556" : "pdb4yay.ent",
-    "Q9GZQ4" : "pdb7w55.ent",
-    "P50406" : "pdb7xtb.ent",
-    "Q14832" : "pdb3sm9.ent",
-    "Q99705" : "pdb8wss.ent",
-    "P30559" : "pdb6tpk.ent",
-    "Q969V1" : "pdb8wst.ent",
-    "O43614" : "pdb4s0v.ent",
-    "Q14416" : "pdb4xaq.ent",
-    "Q99835" : "pdb4jkv.ent",
-    "P21731" : "pdb8xjn.ent",
-    "Q15722" : "pdb7k15.ent",
-    "P35372" : "pdb8ef5.ent",
-    "P25106" : "pdb6k3f.ent",
-    "P08909" : "pdb2mho.ent",
-    "P35346" : "pdb8x8l.ent",
-    "P21462" : "pdb7euo.ent",
-    "P46663" : "pdb7eib.ent",
-    "P28221" : "pdb7e32.ent",
-    "P47211" : "pdb7wq3.ent",
-    "P31424" : "pdb1ddv.ent",
-    "P51685" : "pdb8kfx.ent",
-    "P02699" : "pdb1eds.ent",
-    "P41968" : "pdb8ioc.ent",
-    "P25024" : "pdb1ilp.ent",
-    "Q8TDS4" : "pdb7xk2.ent",
-    "P25101" : "pdb8hcq.ent",
-    "P55085" : "pdb5ndd.ent",
-    "P08483" : "pdb4daj.ent"}
-
     # Create mapping dict for UniProt ID to .pdb suffix keys (same as train_cv.py)
     uniprot_to_pdb_key = {}
     for key in pdb_graph.keys():
@@ -259,9 +167,11 @@ def prepare_dataset(csv_file, protein_graph_path, ligand_graph_path):
     print(f"Available SMILES: {len(smiles_graph_dict)}")
 
     # Create protein_graph_dict using the mapping dict
+    # Register both with and without .pdb suffix so CSV works either way
     mapped_pdb_graph = {}
     for uniprot_id, pdb_key in uniprot_to_pdb_key.items():
         mapped_pdb_graph[uniprot_id] = pdb_graph[pdb_key]
+        mapped_pdb_graph[pdb_key] = pdb_graph[pdb_key]
 
     # Create dataset
     dataset = MoleculeDataset(
@@ -281,7 +191,7 @@ def prepare_dataset(csv_file, protein_graph_path, ligand_graph_path):
 
     return dataset
 
-def run_cv_inference(models, model_weights, dataset, device, batch_size=128, ensemble_method='mean'):
+def run_cv_inference(models, dataset, device, batch_size=128, ensemble_method='mean'):
     """Run CV inference and return ensemble results"""
     print(f"Running CV inference with {len(models)} models...")
 
@@ -338,11 +248,6 @@ def run_cv_inference(models, model_weights, dataset, device, batch_size=128, ens
 
     if ensemble_method == 'mean':
         ensemble_predictions = np.mean(all_predictions, axis=0)
-    elif ensemble_method == 'weighted':
-        # Normalize weights
-        weights = np.array(model_weights[:len(models)])
-        weights = weights / np.sum(weights)
-        ensemble_predictions = np.average(all_predictions, axis=0, weights=weights)
     elif ensemble_method == 'majority':
         # Binary voting (0.5 as threshold)
         binary_predictions = (all_predictions > 0.5).astype(int)
@@ -444,7 +349,7 @@ def main():
         raise FileNotFoundError(f"Ligand graph file not found: {args.ligand_graph}")
 
     # Load CV models
-    models, model_weights, device = load_cv_models(
+    models, device = load_cv_models(
         args.model_dir, args.model_type, args.split_type, args.n_folds, args
     )
 
@@ -456,7 +361,7 @@ def main():
 
     # Run CV inference
     ensemble_predictions, protein_names, smiles, all_predictions = run_cv_inference(
-        models, model_weights, dataset, device, args.batch_size, args.ensemble_method
+        models, dataset, device, args.batch_size, args.ensemble_method
     )
 
     # Save results

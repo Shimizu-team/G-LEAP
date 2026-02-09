@@ -1,9 +1,9 @@
 # GLEAP Python Dependencies
 #
-# インストール方法:
+# To install all dependencies, run:
 #   pip install -r requirements.txt
 #
-# 注意: PyTorchとCUDAは事前にインストールが必要
+# Caution: PyTorch and CUDA must be installed beforehand
 #   pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 --index-url https://download.pytorch.org/whl/cu121
 
 # ==== Core Deep Learning ====
