@@ -2,7 +2,10 @@
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/shimizu-team/G-LEAP/blob/main/examples/tutorial_inference.ipynb)
 
-Graph-based model for predicting GPCR-ligand interactions using ESM-C protein embeddings and Uni-Mol compound representations.
+Graph-based model for predicting GPCR-ligand interactions.
+
+![G-LEAP_GA](https://github.com/user-attachments/assets/94056874-1ecc-433d-9768-79fe3ef52020)
+
 
 ## System Requirements
 
