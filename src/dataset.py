@@ -1,5 +1,6 @@
 import torch
-from torch_geometric.data import Dataset, DataLoader
+from torch_geometric.data import Dataset
+from torch_geometric.loader import DataLoader
 from torch_geometric import data as DATA
 import numpy as np
 import pandas as pd
@@ -68,7 +69,6 @@ class MoleculeDataset(Dataset):
         return data
 
 def split_dataset(dataset, train_ratio=0.8, valid_ratio=0.1, test_ratio=0.1, seed=42):
-    """Basic function to randomly split dataset"""
     torch.manual_seed(seed)
 
     num_samples = len(dataset)
@@ -84,7 +84,6 @@ def split_dataset(dataset, train_ratio=0.8, valid_ratio=0.1, test_ratio=0.1, see
     return train_indices, valid_indices, test_indices
 
 def split_by_protein(dataset, train_ratio=0.8, valid_ratio=0.1, test_ratio=0.1, seed=42):
-    """Function to split dataset by protein"""
     np.random.seed(seed)
 
     # Collect indices per protein (optimized: read directly from CSV)
@@ -125,7 +124,6 @@ def split_by_protein(dataset, train_ratio=0.8, valid_ratio=0.1, test_ratio=0.1, 
     return torch.tensor(train_indices), torch.tensor(valid_indices), torch.tensor(test_indices)
 
 def split_by_ligand(dataset, train_ratio=0.8, valid_ratio=0.1, test_ratio=0.1, seed=42):
-    """Function to split dataset by ligand"""
     np.random.seed(seed)
 
     # Collect indices per ligand (optimized: read directly from CSV)

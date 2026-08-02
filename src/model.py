@@ -4,9 +4,6 @@ import torch.nn.functional as F
 from torch_geometric.nn import GCNConv, global_mean_pool, global_max_pool, global_add_pool, BatchNorm, LayerNorm
 
 class BilinearAttention(nn.Module):
-    """
-    Bilinear Attention mechanism for protein-ligand interaction
-    """
     def __init__(self, ligand_dim, protein_dim, hidden_dim=128, dropout=0.2):
         super(BilinearAttention, self).__init__()
 
@@ -32,15 +29,6 @@ class BilinearAttention(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, ligand_features, protein_features):
-        """
-        Args:
-            ligand_features: (batch_size, ligand_dim)
-            protein_features: (batch_size, protein_dim)
-
-        Returns:
-            attended_features: (batch_size, hidden_dim // 2)
-            attention_weights: (batch_size, 1)
-        """
         # Bilinear transformation
         bilinear_output = self.bilinear(ligand_features, protein_features)  # (batch_size, hidden_dim)
         bilinear_output = self.dropout(F.relu(bilinear_output))
@@ -201,48 +189,4 @@ class DualGNN_Bilinear(nn.Module):
         output = torch.sigmoid(output)
 
         return output
-
-    def get_attention_weights(self, data):
-        """
-        Method to get attention weights
-        """
-        if self.device is not None:
-            data = data.to(self.device)
-
-        # Create batch information
-        ligand_batch = torch.zeros(data.ligand_x.size(0), dtype=torch.long, device=data.ligand_x.device)
-        protein_batch = torch.zeros(data.protein_x.size(0), dtype=torch.long, device=data.protein_x.device)
-
-        start_idx = 0
-        for i in range(data.num_graphs):
-            size = data.ligand_num_nodes[i]
-            ligand_batch[start_idx:start_idx + size] = i
-            start_idx += size
-
-        start_idx = 0
-        for i in range(data.num_graphs):
-            size = data.protein_num_nodes[i]
-            protein_batch[start_idx:start_idx + size] = i
-            start_idx += size
-
-        # Get ligand and protein features in forward pass
-        x_l = F.relu(self.ligand_conv1(data.ligand_x, data.ligand_edge_index))
-        x_l = self.dropout(x_l)
-        x_l = F.relu(self.ligand_conv2(x_l, data.ligand_edge_index))
-        x_l = global_mean_pool(x_l, ligand_batch)
-
-        x_p = F.relu(self.protein_conv1(data.protein_x, data.protein_edge_index))
-        x_p = self.dropout(x_p)
-        x_p = F.relu(self.protein_conv2(x_p, data.protein_edge_index))
-        x_p = global_mean_pool(x_p, protein_batch)
-
-        # Get Bilinear attention weights
-        _, bilinear_attention_weights = self.bilinear_attention(x_l, x_p)
-
-        # Store in dictionary and return
-        attention_weights = {
-            'bilinear_attention': bilinear_attention_weights  # Bilinear attention
-        }
-
-        return attention_weights
 

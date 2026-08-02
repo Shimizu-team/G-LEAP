@@ -1,11 +1,4 @@
 #!/usr/bin/env python3
-"""
-Build compound graph dicts using RDKit features + Uni-Mol atomic embeddings.
-
-Output:
-- graph dict (.npy): {smiles: (num_nodes, features, edge_index)}
-"""
-
 import argparse
 
 import networkx as nx

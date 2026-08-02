@@ -1,12 +1,4 @@
 #!/usr/bin/env python3
-"""
-Build protein graph dicts from AlphaFold PDBs using ESMC-300M embeddings.
-
-Outputs:
-- embeddings (.pt): {protein_id: embeddings}
-- graph dict (.npy): {protein_id: (num_nodes, features, edge_index)}
-"""
-
 import argparse
 import glob
 import os

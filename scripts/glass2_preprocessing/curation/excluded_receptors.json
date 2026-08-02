@@ -1,0 +1,37 @@
+{
+  "description": "Receptors excluded during curation of the GLASS2 benchmark to the final 790-receptor set (predominantly non-GPCR proteins and sequence fragments).",
+  "excluded_non_gpcr": [
+    "O08699",
+    "P01303",
+    "P16066",
+    "P17342",
+    "P18505",
+    "P35396",
+    "P41740",
+    "P42264",
+    "P45446",
+    "Q13003",
+    "Q68DU8",
+    "Q6NXT6",
+    "Q867C0",
+    "Q8CI15",
+    "Q8VCC1",
+    "Q92753",
+    "Q9GZR5",
+    "Q9JIA7",
+    "Q9JJ73",
+    "Q9JJ74",
+    "Q9NRA0",
+    "Q9NYA1"
+  ],
+  "excluded_fragments": [
+    "Q8SPZ1",
+    "P97266",
+    "P41986",
+    "Q29006",
+    "P58825",
+    "Q95137"
+  ],
+  "n_excluded": 28,
+  "final_n_receptors": 790
+}

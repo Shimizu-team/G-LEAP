@@ -48,6 +48,7 @@ dependencies:
   - pyyaml
   - joblib
   - ipykernel
+  - requests>=2.28.0
 
   # Chemistry/Biology (conda-forge)
   - rdkit>=2024.03

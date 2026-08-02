@@ -23,18 +23,21 @@ public_gleap/
 │   ├── model.py            # GCN + Bilinear attention model
 │   └── dataset.py          # PyTorch Geometric dataset
 ├── models/
-│   ├── drug_screening/     # Drug screening pretrained weights (10 folds)
+│   ├── drug_screening/     # Protein-split benchmark weights (10 folds; Figure 1D/E)
 │   └── metabolite_screening/  # Metabolite screening weights (10 folds)
 ├── scripts/
 │   ├── build_protein_graphs_esmc.py   # Protein graph generation
-│   └── build_compound_graphs_unimol.py # Compound graph generation
+│   ├── build_compound_graphs_unimol.py # Compound graph generation
+│   └── glass2_preprocessing/  # GLASS 2.0 benchmark construction (raw tables → CV splits)
 ├── data/
 │   ├── pdb_sample/         # Sample AlphaFold PDB structures
 │   ├── protein_graph_sample.npy
 │   ├── ligand_graph_sample.npy
-│   └── protein_embeddings_sample.pt
+│   ├── protein_embeddings_sample.pt
+│   └── benchmark_receptor_folds.csv # 790 receptors: protein_fold + pair counts + used_for_model (773)
 ├── examples/
-│   ├── tutorial_inference.ipynb  # Interactive tutorial
+│   ├── tutorial_inference.ipynb      # Interactive tutorial (GPU; includes Figure 1D/E)
+│   ├── tutorial_inference_cpu.ipynb  # CPU variant (sample inference only)
 │   ├── input_sample.csv
 │   └── ligands_sample.csv
 ├── environment.yaml        # Conda environment specification
@@ -68,7 +71,9 @@ python -m ipykernel install --user --name gleap --display-name "Python (gleap)"
 
 See the interactive tutorial: `examples/tutorial_inference.ipynb` [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/shimizu-team/G-LEAP/blob/main/examples/tutorial_inference.ipynb)
 
-**Expected runtime:** The complete tutorial notebook runs in 2-3 minutes on an NVIDIA H100 GPU.
+**Expected runtime:** The sample-inference tutorial runs in 2-3 minutes on an NVIDIA H100 GPU.
+Reproducing the Figure 1D/E benchmark is a separate, GPU-heavy offline step (building graphs for
+790 receptors / ~165k compounds, then 10-fold inference), not part of the 2-3 minute run.
 
 ### Run Sample Inference
 
@@ -106,12 +111,22 @@ Feature dimensions:
 
 ### 1. Protein Graphs (ESM-C + AlphaFold PDB)
 
-Download PDB structures from [AlphaFold DB](https://alphafold.ebi.ac.uk/) (CC-BY 4.0 license):
+Download PDB structures from [AlphaFold DB](https://alphafold.ebi.ac.uk/) (CC-BY 4.0 license). The
+AlphaFold DB serves the current model version (v6 at the time of writing); use the API to stay
+version-agnostic, or a direct file URL to pin a version:
 
 ```bash
-# Example: Download structure for UniProt P42866
-curl -o P42866.pdb "https://alphafold.ebi.ac.uk/files/AF-P42866-F1-model_v4.pdb"
+# Version-agnostic (recommended): resolve the current model URL via the API
+curl -s "https://alphafold.ebi.ac.uk/api/prediction/P42866" \
+  | python -c "import sys,json;print(json.load(sys.stdin)[0]['pdbUrl'])" \
+  | xargs curl -o P42866.pdb
+
+# ...or pin a specific version directly
+curl -o P42866.pdb "https://alphafold.ebi.ac.uk/files/AF-P42866-F1-model_v6.pdb"
 ```
+
+The *Reproduce Figure 1D, E* section of the tutorial notebook downloads all 790 benchmark
+structures this way in a loop.
 
 Generate protein graphs:
 

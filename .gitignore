@@ -9,9 +9,22 @@ logs/
 
 # Generated outputs
 examples/output*.csv
+examples/metabolite_output.csv
+/predictions/
+figure_1DE.png
+
+# PyG dataset caches (created at runtime)
+data_eval_tmp/
+data_inference_cv/
 
 # Tutorial generated files
 data/*_tutorial.*
+data/benchmark_pdb/
+data/benchmark_protein_graph.npy
+data/benchmark_protein_embeddings.pt
+data/benchmark_ligand_graph.npy
+data/benchmark_receptors.csv
+data/benchmark_compounds.csv
 
 # IDE
 .vscode/
@@ -19,3 +32,6 @@ data/*_tutorial.*
 
 # OS
 .DS_Store
+
+# Backups
+*.bak

@@ -1,23 +1,11 @@
 #!/usr/bin/env python3
-"""
-Cross-Validation inference script.
-Run inference using multiple CV fold models and ensemble the results.
-
-Usage:
-python inference_cv.py --model_dir /path/to/cv_models \
-    --csv_file /path/to/data.csv \
-    --protein_graph /path/to/protein_embeddings.npy \
-    --ligand_graph /path/to/ligand_embeddings.npy \
-    --output_file results.csv
-"""
-
 import torch
 import numpy as np
 import pandas as pd
 import argparse
 import os
 import glob
-from torch_geometric.data import DataLoader
+from torch_geometric.loader import DataLoader
 from dataset import MoleculeDataset
 from model import DualGNN_Bilinear
 import json
@@ -87,7 +75,6 @@ def parse_args():
     return parser.parse_args()
 
 def load_cv_models(model_dir, model_type, split_type, n_folds, args):
-    """Load all CV models"""
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') if args.device == 'auto' else torch.device(args.device)
 
     print(f"Using device: {device}")
@@ -124,7 +111,7 @@ def load_cv_models(model_dir, model_type, split_type, n_folds, args):
 
         # Load model weights
         try:
-            checkpoint = torch.load(model_path, map_location=device, weights_only=False)
+            checkpoint = torch.load(model_path, map_location=device, weights_only=True)
             if 'model_state_dict' in checkpoint:
                 model.load_state_dict(checkpoint['model_state_dict'])
             else:
@@ -146,7 +133,6 @@ def load_cv_models(model_dir, model_type, split_type, n_folds, args):
     return models, device
 
 def prepare_dataset(csv_file, protein_graph_path, ligand_graph_path):
-    """Prepare dataset (following train_cv.py)"""
     print("Loading graph data...")
 
     # Load graph data
@@ -156,12 +142,13 @@ def prepare_dataset(csv_file, protein_graph_path, ligand_graph_path):
     print(f"Protein graph entries: {len(pdb_graph)}")
     print(f"Ligand graph entries: {len(smiles_graph_dict)}")
 
-    # Create mapping dict for UniProt ID to .pdb suffix keys (same as train_cv.py)
+    # Map UniProt ID -> graph key, accepting keys saved either with a ".pdb"
+    # suffix (e.g. "P42866.pdb") or as a bare UniProt ID ("P42866"), so graph
+    # dicts from build_protein_graphs_esmc.py (bare keys) also work.
     uniprot_to_pdb_key = {}
     for key in pdb_graph.keys():
-        if '.pdb' in key:
-            uniprot_id = key.split('.')[0]
-            uniprot_to_pdb_key[uniprot_id] = key
+        uniprot_id = key.split('.')[0] if '.pdb' in key else key
+        uniprot_to_pdb_key[uniprot_id] = key
 
     print(f"Available protein mappings: {len(uniprot_to_pdb_key)}")
     print(f"Available SMILES: {len(smiles_graph_dict)}")
@@ -192,7 +179,6 @@ def prepare_dataset(csv_file, protein_graph_path, ligand_graph_path):
     return dataset
 
 def run_cv_inference(models, dataset, device, batch_size=128, ensemble_method='mean'):
-    """Run CV inference and return ensemble results"""
     print(f"Running CV inference with {len(models)} models...")
 
     # Create DataLoader
@@ -262,7 +248,6 @@ def run_cv_inference(models, dataset, device, batch_size=128, ensemble_method='m
 
 def save_cv_results(ensemble_predictions, protein_names, smiles, all_predictions,
                    output_file, input_csv_file, models_info=None):
-    """Save CV results to CSV file"""
     print(f"Saving CV results to {output_file}...")
 
     # Read original CSV file to add information
