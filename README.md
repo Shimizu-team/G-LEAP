@@ -1,4 +1,4 @@
-# Geometric and Evolutionary Deep Learning Prioritizes GPCR–Ligand Interactions across the Human Metabolome
+# Geometric and Evolutionary Deep Learning Prioritizes GPCR Ligand Interactions across the Human Metabolome
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/shimizu-team/G-LEAP/blob/main/examples/tutorial_inference.ipynb)
 
